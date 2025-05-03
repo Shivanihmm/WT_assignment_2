@@ -69,5 +69,5 @@ How to Run:
 
     > npm start
 
-5. The app will open automatically in your browser at `http://localhost:3000`.
+5. The app will open automatically in your browser at `http://localhost:3000`
 
