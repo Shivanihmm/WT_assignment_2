@@ -12,12 +12,14 @@ This repository contains two beginner-friendly web development projects that dem
 This is a basic e-commerce product catalog interface built using only front-end web technologies. It showcases 10 different products (e.g., laptops, books, mobiles) with details like an image, title, and price. Each product also includes an "Add to Cart" button that triggers a feedback alert.
 
 
+
 Features
 
 - Products are dynamically rendered using a JavaScript array and loops
 - On clicking "Add to Cart", a pop-up alert shows "Product added!"
 - The layout uses CSS Flexbox to display items in a responsive grid
 - Interactive hover effects such as zoom-in and shadow for better UX
+
 
   
 How to Run
@@ -29,9 +31,13 @@ How to Run
 
 
 
+
+
 ✅ Task 2: To-Do List App (ReactJS)
 
 This is a functional To-Do List application built using ReactJS. It allows users to manage daily tasks — adding new ones, marking them as completed, and deleting them. The interface is clean, and completed tasks are visually distinguished. An optional filter lets users view all, active, or completed tasks.
+
+
 
 Features
 
@@ -40,6 +46,8 @@ Features
 - Completed tasks appear with strikethrough and colored background
 - Components communicate via props for a modular structure
 - Bonus: Includes a filter feature (All / Active / Completed)
+
+
 
 How to Run:
 
