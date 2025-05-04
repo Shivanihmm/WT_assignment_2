@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechElite Store - Product Catalog</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        /* Main Content Styles */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        /* Product Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Product Card Styles */
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image {
+            height: 200px;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ef4444;
+            color: white;
+            padding: 0.3rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .product-details {
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .product-category {
+            font-size: 0.8rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #111827;
+        }
+
+        .product-description {
+            font-size: 0.9rem;
+            color: #4b5563;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+            flex-grow: 1;
+        }
+
+        .product-price {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #111827;
+            margin-top: auto;
+            margin-bottom: 1rem;
+        }
+
+        .add-to-cart-btn {
+            background-color: #6366f1;
+            color: white;
+            border: none;
+            padding: 0.8rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #4f46e5;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: #16a34a;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Cart Modal */
+        .cart-modal {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .cart-modal.show {
+            transform: translateX(0);
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .cart-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        .cart-items {
+            margin-bottom: 1.5rem;
+        }
+
+        .cart-item {
+            display: flex;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 1rem;
+        }
+
+        .cart-item-details {
+            flex-grow: 1;
+        }
+
+        .cart-item-title {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .cart-item-price {
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-remove {
+            color: #ef4444;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .cart-total {
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: right;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .checkout-btn {
+            background-color: #6366f1;
+            color: white;
+            border: none;
+            padding: 0.8rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .checkout-btn:hover {
+            background-color: #4f46e5;
+        }
+
+        /* Product Detail Modal */
+        .product-detail-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .product-detail-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .product-detail-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .close-detail {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        .product-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .product-detail-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .product-detail-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-detail-price {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #6366f1;
+            margin-bottom: 1rem;
+        }
+
+        .product-detail-description {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .product-detail-specs {
+            margin-bottom: 1.5rem;
+        }
+
+        .spec-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .spec-title {
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .product-comments {
+            margin-top: 2rem;
+            grid-column: span 2;
+        }
+
+        .comments-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .comment {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: #f9fafb;
+            border-radius: 6px;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .comment-text {
+            line-height: 1.5;
+        }
+
+        /* Cart Button */
+        .cart-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #111827;
+            color: #9ca3af;
+            padding: 3rem 1rem;
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+            
+            .product-detail-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cart-modal {
+                width: 90%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>TechElite Store</h1>
+            <p class="tagline">Premium Tech Products for Modern Lifestyles</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="products-grid" id="products-container">
+            <!-- Products will be dynamically inserted here -->
+        </div>
+    </main>
+
+    <!-- Cart Button -->
+    <button class="cart-button" id="cart-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span class="cart-count" id="cart-count">0</span>
+    </button>
+
+    <!-- Cart Modal -->
+    <div class="cart-modal" id="cart-modal">
+        <div class="cart-header">
+            <h2 class="cart-title">Your Cart</h2>
+            <button class="close-cart" id="close-cart">&times;</button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <!-- Cart items will be inserted here -->
+        </div>
+        <div class="cart-total" id="cart-total">
+            Total: $0.00
+        </div>
+        <button class="checkout-btn">Proceed to Checkout</button>
+    </div>
+
+    <!-- Product Detail Modal -->
+    <div class="product-detail-modal" id="product-detail-modal">
+        <div class="product-detail-content">
+            <button class="close-detail" id="close-detail">&times;</button>
+            <div class="product-detail-grid" id="product-detail-content">
+                <!-- Product details will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <span>Product added to cart!</span>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 TechElite Store - All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script>
+        // Product data array
+        const products = [
+            {
+                id: 1,
+                title: "Ultra Pro Laptop",
+                category: "Laptops",
+                description: "Powerful performance in a sleek design. 16GB RAM, 512GB SSD, and 14-hour battery life.",
+                price: 1299.99,
+                image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1626&q=80",
+                badge: "Best Seller",
+                specs: [
+                    "Processor: Intel Core i7-1165G7",
+                    "Memory: 16GB DDR4",
+                    "Storage: 512GB NVMe SSD",
+                    "Display: 15.6\" FHD IPS",
+                    "Battery: 14 hours",
+                    "Weight: 3.5 lbs"
+                ],
+                comments: [
+                    { author: "Alex Johnson", text: "This laptop is amazing! The battery life is even better than advertised." },
+                    { author: "Sam Wilson", text: "Very fast performance, perfect for both work and gaming." }
+                ]
+            },
+            {
+                id: 2,
+                title: "SmartPhone X12",
+                category: "Smartphones",
+                description: "Latest flagship with cutting-edge camera system and all-day battery life.",
+                price: 899.99,
+                image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+                badge: "New",
+                specs: [
+                    "Display: 6.7\" AMOLED 120Hz",
+                    "Processor: Snapdragon 888",
+                    "RAM: 8GB",
+                    "Storage: 128GB",
+                    "Cameras: Triple 50MP+12MP+8MP",
+                    "Battery: 4500mAh"
+                ],
+                comments: [
+                    { author: "Taylor Smith", text: "The camera quality is outstanding, especially in low light." },
+                    { author: "Jordan Lee", text: "Super smooth performance and the display is gorgeous." }
+                ]
+            },
+            {
+                id: 3,
+                title: "Wireless Noise-Cancelling Headphones",
+                category: "Audio",
+                description: "Premium sound quality with 30-hour battery life and ultimate comfort.",
+                price: 249.99,
+                image: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2065&q=80",
+                badge: null,
+                specs: [
+                    "Battery Life: 30 hours",
+                    "Bluetooth 5.0",
+                    "Active Noise Cancellation",
+                    "Weight: 8.8 oz",
+                    "Microphone: Built-in",
+                    "Water Resistance: IPX4"
+                ],
+                comments: [
+                    { author: "Chris Martin", text: "Best headphones I've ever owned. The noise cancellation is incredible." },
+                    { author: "Pat Williams", text: "Very comfortable for long listening sessions." }
+                ]
+            },
+            {
+                id: 4,
+                title: "4K Smart TV - 55\"",
+                category: "Home Entertainment",
+                description: "Crystal clear display with smart features and immersive sound experience.",
+                price: 699.99,
+                image: "https://images.unsplash.com/photo-1577979749830-f1d742b96791?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+                badge: "Sale",
+                specs: [
+                    "Screen Size: 55 inches",
+                    "Resolution: 4K Ultra HD",
+                    "Smart Platform: WebOS",
+                    "HDR: Dolby Vision, HDR10",
+                    "Ports: 4 HDMI, 2 USB",
+                    "Sound: 20W Dolby Atmos"
+                ],
+                comments: [
+                    { author: "Morgan Taylor", text: "The picture quality is stunning, especially with 4K content." },
+                    { author: "Casey Brown", text: "Easy to set up and the smart features work flawlessly." }
+                ]
+            },
+            {
+                id: 5,
+                title: "Smart Watch Series 5",
+                category: "Wearables",
+                description: "Track your fitness, manage notifications, and stay connected on the go.",
+                price: 299.99,
+                image: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2072&q=80",
+                badge: null,
+                specs: [
+                    "Display: 1.78\" AMOLED",
+                    "Battery: 2 days",
+                    "Sensors: Heart rate, SpO2, GPS",
+                    "Water Resistance: 5ATM",
+                    "Compatibility: iOS & Android",
+                    "Storage: 8GB"
+                ],
+                comments: [
+                    { author: "Riley Clark", text: "Perfect for tracking my workouts and daily activity." },
+                    { author: "Jamie White", text: "The always-on display is very useful." }
+                ]
+            },
+            {
+                id: 6,
+                title: "Portable SSD - 1TB",
+                category: "Storage",
+                description: "Ultra-fast data transfer in a compact, durable design for on-the-go use.",
+                price: 159.99,
+                image: "https://images.unsplash.com/photo-1597852074816-d933c7d2b988?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+                badge: null,
+                specs: [
+                    "Capacity: 1TB",
+                    "Interface: USB 3.2 Gen 2",
+                    "Speed: 1050MB/s read, 1000MB/s write",
+                    "Dimensions: 3.5 x 1.8 x 0.3 inches",
+                    "Weight: 1.5 oz",
+                    "Durability: IP55 water and dust resistant"
+                ],
+                comments: [
+                    { author: "Drew Miller", text: "Incredibly fast transfers compared to my old HDD." },
+                    { author: "Jordan Smith", text: "Tiny but holds all my important files securely." }
+                ]
+            },
+            {
+                id: 7,
+                title: "Professional Camera Kit",
+                category: "Photography",
+                description: "Capture stunning images with this full-frame mirrorless camera and lens kit.",
+                price: 1899.99,
+                image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+                badge: "Premium",
+                specs: [
+                    "Sensor: Full-frame 24.2MP",
+                    "Lens: 24-70mm f/2.8",
+                    "ISO Range: 100-51200",
+                    "Autofocus: 693-point",
+                    "Video: 4K 30fps",
+                    "Connectivity: Wi-Fi, Bluetooth"
+                ],
+                comments: [
+                    { author: "Robin Davis", text: "Professional quality images straight out of camera." },
+                    { author: "Skyler Wilson", text: "Worth every penny for serious photographers." }
+                ]
+            },
+            {
+                id: 8,
+                title: "Gaming Console Pro",
+                category: "Gaming",
+                description: "Next-gen gaming with ultra-fast loading times and stunning graphics.",
+                price: 499.99,
+                image: "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2027&q=80",
+                badge: "Limited Stock",
+                specs: [
+                    "CPU: 8-core 3.5GHz",
+                    "GPU: 10.3 TFLOPS",
+                    "Memory: 16GB GDDR6",
+                    "Storage: 1TB SSD",
+                    "Resolution: Up to 8K",
+                    "Ray Tracing: Yes"
+                ],
+                comments: [
+                    { author: "Avery Johnson", text: "The loading times are almost non-existent compared to last gen." },
+                    { author: "Peyton Brown", text: "Graphics are mind-blowing, especially with HDR." }
+                ]
+            },
+            {
+                id: 9,
+                title: "Smart Home Security System",
+                category: "Smart Home",
+                description: "Complete security solution with cameras, sensors, and smartphone control.",
+                price: 349.99,
+                image:  "https://images.unsplash.com/photo-1558002038-1055907df827?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+                badge: null,
+                specs: [
+                    "Components: 2 cameras, 3 sensors, hub",
+                    "Resolution: 1080p HD",
+                    "Night Vision: Yes",
+                    "Storage: 24-hour cloud backup",
+                    "Connectivity: Wi-Fi, Z-Wave",
+                    "Compatibility: Alexa, Google Assistant"
+                ],
+                comments: [
+                    { author: "Dakota Lee", text: "Easy to install and gives me peace of mind when away from home." },
+                    { author: "Sydney Clark", text: "The app is very intuitive and notifications are instant." }
+                ]
+            },
+            {
+                id: 10,
+                title: "Wireless Charging Station",
+                category: "Accessories",
+                description: "Charge multiple devices simultaneously with this elegant charging solution.",
+                price: 79.99,
+                image: "https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2068&q=80",
+                badge: null,
+                specs: [
+                    "Output: 15W max per device",
+                    "Compatibility: Qi-enabled devices",
+                    "Charging Areas: 3",
+                    "Material: Aluminum + silicone",
+                    "Cable Length: 5ft",
+                    "LED Indicators: Yes"
+                ],
+                comments: [
+                    { author: "Blake Wilson", text: "Charges my phone, watch, and earbuds all at once." },
+                    { author: "Cameron Taylor", text: "Looks great on my nightstand and works perfectly." }
+                ]
+            }
+        ];
+
+        // Shopping cart array
+        let cart = [];
+
+        // DOM elements
+        const productsContainer = document.getElementById('products-container');
+        const cartButton = document.getElementById('cart-button');
+        const cartModal = document.getElementById('cart-modal');
+        const closeCart = document.getElementById('close-cart');
+        const cartItems = document.getElementById('cart-items');
+        const cartTotal = document.getElementById('cart-total');
+        const cartCount = document.getElementById('cart-count');
+        const toast = document.getElementById('toast');
+        const productDetailModal = document.getElementById('product-detail-modal');
+        const closeDetail = document.getElementById('close-detail');
+        const productDetailContent = document.getElementById('product-detail-content');
+
+        // Function to format price
+        function formatPrice(price) {
+            return '$' + price.toFixed(2);
+        }
+
+        // Function to create product cards
+        function createProductCards() {
+            products.forEach(product => {
+                // Create card element
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                
+                // Create card HTML structure
+                let badgeHTML = '';
+                if (product.badge) {
+                    badgeHTML = `<div class="product-badge">${product.badge}</div>`;
+                }
+                
+                card.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.image}" alt="${product.title}">
+                        ${badgeHTML}
+                    </div>
+                    <div class="product-details">
+                        <div class="product-category">${product.category}</div>
+                        <h3 class="product-title">${product.title}</h3>
+                        <p class="product-description">${product.description}</p>
+                        <div class="product-price">${formatPrice(product.price)}</div>
+                        <button class="add-to-cart-btn" data-id="${product.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                            Add to Cart
+                        </button>
+                    </div>
+                `;
+                
+                // Add click event to show product details
+                card.addEventListener('click', (e) => {
+                    // Don't open detail if clicking on add to cart button
+                    if (!e.target.closest('.add-to-cart-btn')) {
+                        showProductDetail(product.id);
+                    }
+                });
+                
+                // Add to container
+                productsContainer.appendChild(card);
+            });
+        }
+
+        // Function to show product detail
+        function showProductDetail(productId) {
+            const product = products.find(p => p.id == productId);
+            
+            // Create specs HTML
+            let specsHTML = '';
+            product.specs.forEach(spec => {
+                specsHTML += `<div class="spec-item"><span class="spec-title">${spec.split(':')[0]}:</span>${spec.split(':')[1]}</div>`;
+            });
+            
+            // Create comments HTML
+            let commentsHTML = '';
+            product.comments.forEach(comment => {
+                commentsHTML += `
+                    <div class="comment">
+                        <div class="comment-author">${comment.author}</div>
+                        <div class="comment-text">${comment.text}</div>
+                    </div>
+                `;
+            });
+            
+            // Set product detail content
+            productDetailContent.innerHTML = `
+                <div>
+                    <img src="${product.image}" alt="${product.title}" class="product-detail-image">
+                </div>
+                <div>
+                    <h2 class="product-detail-title">${product.title}</h2>
+                    <div class="product-detail-price">${formatPrice(product.price)}</div>
+                    <p class="product-detail-description">${product.description}</p>
+                    <div class="product-detail-specs">
+                        <h3>Specifications</h3>
+                        ${specsHTML}
+                    </div>
+                    <button class="add-to-cart-btn" data-id="${product.id}" style="margin-top: 1rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        </svg>
+                        Add to Cart
+                    </button>
+                </div>
+                <div class="product-comments">
+                    <h3 class="comments-title">Customer Reviews</h3>
+                    ${commentsHTML}
+                </div>
+            `;
+            
+            // Show modal
+            productDetailModal.classList.add('show');
+            
+            // Add event listener to the add to cart button in the detail view
+            const addToCartBtn = productDetailContent.querySelector('.add-to-cart-btn');
+            addToCartBtn.addEventListener('click', () => {
+                addToCart(product.id);
+            });
+        }
+
+        // Function to add product to cart
+        function addToCart(productId) {
+            const product = products.find(p => p.id == productId);
+            const existingItem = cart.find(item => item.id == productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    title: product.title,
+                    price: product.price,
+                    image: product.image,
+                    quantity: 1
+                });
+            }
+            
+            // Update cart UI
+            updateCartUI();
+            
+            // Show toast notification
+            showToast(`${product.title} added to cart`);
+        }
+
+        // Function to remove product from cart
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id != productId);
+            updateCartUI();
+        }
+
+        // Function to update cart UI
+        function updateCartUI() {
+            // Clear current cart items
+            cartItems.innerHTML = '';
+            
+            // Add each item to cart
+            let total = 0;
+            cart.forEach(item => {
+                total += item.price * item.quantity;
+                
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+                cartItem.innerHTML = `
+                    <img src="${item.image}" alt="${item.title}" class="cart-item-image">
+                    <div class="cart-item-details">
+                        <div class="cart-item-title">${item.title}</div>
+                        <div class="cart-item-price">${formatPrice(item.price)} × ${item.quantity}</div>
+                        <button class="cart-item-remove" data-id="${item.id}">Remove</button>
+                    </div>
+                `;
+                
+                cartItems.appendChild(cartItem);
+            });
+            
+            // Update total
+                        // Update total
+                        cartTotal.textContent = `Total: ${formatPrice(total)}`;
+            
+            // Update cart count
+            const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = itemCount;
+            
+            // Add event listeners to remove buttons
+            document.querySelectorAll('.cart-item-remove').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    removeFromCart(e.target.getAttribute('data-id'));
+                });
+            });
+        }
+
+        // Function to show toast notification
+        function showToast(message) {
+            const toastText = toast.querySelector('span');
+            toastText.textContent = message;
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Create product cards
+            createProductCards();
+            
+            // Add event listeners to all add to cart buttons
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('add-to-cart-btn') || e.target.closest('.add-to-cart-btn')) {
+                    const button = e.target.classList.contains('add-to-cart-btn') ? 
+                        e.target : e.target.closest('.add-to-cart-btn');
+                    const productId = button.getAttribute('data-id');
+                    addToCart(productId);
+                }
+            });
+            
+            // Cart button click
+            cartButton.addEventListener('click', () => {
+                cartModal.classList.add('show');
+            });
+            
+            // Close cart modal
+            closeCart.addEventListener('click', () => {
+                cartModal.classList.remove('show');
+            });
+            
+            // Close product detail modal
+            closeDetail.addEventListener('click', () => {
+                productDetailModal.classList.remove('show');
+            });
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === productDetailModal) {
+                    productDetailModal.classList.remove('show');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
